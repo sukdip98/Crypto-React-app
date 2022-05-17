@@ -1,9 +1,12 @@
 import { AppBar, Container, Select, Toolbar, Typography,MenuItem } from '@mui/material'
 import React, { useState } from 'react'
 import {useNavigate} from 'react-router-dom'
+import AuthModal from '../Authentication/AuthModal';
+import UserSideBar from '../Authentication/UserSideBar';
 import { CryptoState } from '../CryptoContext';
-const Header = (props) => {
-    const {currency,symbol,setCurrency}=CryptoState();
+const Header = () => {
+    const {currency,symbol,setCurrency,user}=CryptoState();
+    console.log(user);
     console.log(currency)
     const handleChange = (event) => {
         setCurrency(event.target.value);
@@ -21,6 +24,8 @@ const Header = (props) => {
           <MenuItem value={"INR"}>INR</MenuItem>
           <MenuItem value={"USD"}>USD</MenuItem>
           </Select>
+          {/* <AuthModal/> */}
+          { user ? <UserSideBar/>:<AuthModal/>}
                 </Toolbar>
             </Container>
         </AppBar>

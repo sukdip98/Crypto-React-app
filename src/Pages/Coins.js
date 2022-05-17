@@ -1,20 +1,23 @@
 import { LinearProgress, Typography } from '@material-ui/core';
+import { Button } from '@mui/material';
 import axios from 'axios';
+import { doc, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { SingleCoin } from '../Config/Api';
 import { CryptoState } from '../CryptoContext';
+import { db } from '../Firebase';
 import CoinChart from './CoinChart';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
+
 function numberWithCommas(x) {
     return x?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 const Coins = () => {
     const {id}=useParams();
-    const {currency,symbol,setCurrency}=CryptoState();
+    const {currency,symbol,setCurrency,user,watchList}=CryptoState();
     const [coin,setCoin]=useState({});
     const [loading,setLoading]=useState(false);
+    const inWatchList=watchList.includes(coin?.id);
     const getCoinById=async()=>{
         setLoading(true);
        const {data}= await axios.get(SingleCoin(id));
@@ -23,8 +26,19 @@ const Coins = () => {
        setLoading(false);
 
     }
+
 console.log(coin);
     useEffect(()=>{getCoinById()},[currency]);
+    const addToList=async()=>{
+      const coinRef=doc(db,"watchList",user.uid);
+      try{
+        await setDoc(coinRef,{coins:watchList?[...watchList,coin.id]:[coin?.id]});
+        window.alert("coin added successfully");
+      }
+      catch(err){
+        window.alert(err);
+      }
+    }
   return (
     <div >
         {loading?<LinearProgress style={{backgroundColor:"gold"}}/>:
@@ -38,13 +52,12 @@ console.log(coin);
             <Typography variant='h4' style={{textAlign:"center"}}>Rank:{coin?.market_cap_rank}</Typography>
             <Typography variant='h5' style={{textAlign:"center",marginTop:"3vh"}}>Current Price:{symbol} {numberWithCommas(coin.market_data?.current_price[currency.toLowerCase()])}</Typography>
             <Typography variant='h5' style={{textAlign:"center",marginTop:"3vh"}}>Market Cap:{symbol}{numberWithCommas(coin.market_data?.market_cap[currency.toLowerCase()])}M</Typography>
+            {user && (<Button onClick={addToList} variant='contained' style={{backgroundColor:"gold",marginTop:"2vw"}}>
+              {inWatchList?"Remove":"Add to wishList"}</Button>)}
         </div>
 
         </div>
-        { loading? <Box sx={{ display: 'flex',justifyContent:"center",alignItems:"center" }}>
-      <CircularProgress size={100}  />
-    </Box>:<CoinChart coin={coin}/> }
-        {/* {coin?:null} */}
+        <CoinChart coin={coin}/> 
         </div>
         }
         

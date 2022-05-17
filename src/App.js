@@ -6,6 +6,7 @@ import CoinPage from './Pages/CoinPage';
 import Header from './Pages/Header';
 import { ThemeProvider } from '@mui/styles';
 import Coins from './Pages/Coins';
+import AlertBar from './Authentication/AlertBar';
 // const theme=createTheme({
 //  backgroundColor:"red",
 //  color:"white",

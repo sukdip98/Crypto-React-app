@@ -43,7 +43,7 @@ const Carousel =() => {
      }
   return (
       <Container>
- <div style={{height:"40%",display:"flex",alignItem:"centre"}}>
+ <div style={{height:"35%",display:"flex",alignItem:"centre"}}>
         <AliceCarousel mouseTracking infinite autoPlayInterval={true} animationDuration={150} responsive={responsive}
         disableButtonsControls items={items} disableDotsControls/>
     </div>
